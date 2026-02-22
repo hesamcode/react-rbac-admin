@@ -1,16 +1,70 @@
-# React + Vite
+# RBAC Admin Console
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Production-grade React + Tailwind v4 admin console demo focused on role-based access control, static deployment safety, and accessibility.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Vite + React 19
+- Tailwind CSS v4 with `@tailwindcss/vite`
+- Hash-based routing (`HashRouter`) for GitHub Pages compatibility
+- Local state persistence with schema versioning + migration stub
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Auth simulation (email + role selector: Admin, Manager, Support, Viewer)
+- RBAC permission matrix: `view`, `edit`, `delete`, `export`, `manageBilling`, `manageUsers`
+- Protected routes with friendly access-denied states
+- Overview dashboard with KPIs + inline SVG activity chart
+- Users module:
+  - desktop table + mobile card layout
+  - search, sort, pagination
+  - create/edit modal with validation
+  - delete restricted to Admin role
+  - loading/empty states + toast notifications
+- Billing route restricted to Admin
+- Audit trail for login/logout, user CRUD, billing exports, and settings changes
+- Settings:
+  - dark/light theme toggle (persists)
+  - density toggle (persists)
+  - reset demo data confirm modal
+- About route with required author paragraph/signature
+- Global footer signature across all routes
+- Accessibility:
+  - visible focus states
+  - keyboard navigation
+  - modal focus trap + ESC close + focus return
 
-## Expanding the ESLint configuration
+## Local Development
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm install
+npm run dev
+```
+
+## Production Build
+
+```bash
+npm run build
+```
+
+Output is generated in `dist/` and is fully static.
+
+## GitHub Pages Notes (Important)
+
+- Routing uses `HashRouter`, so deep links work on static hosting without server rewrites.
+- Do not switch to `BrowserRouter` for GitHub Pages.
+- Keep Vite `base` path configurable externally (for example via CI `vite build --base=/repo-name/`).
+- Avoid hardcoded root URLs and absolute asset paths (`/...`).
+  - Use imports or `new URL(..., import.meta.url)` style paths.
+- No backend/server/SSR is required.
+- No Node-only runtime APIs are used by the client app.
+
+## Persistence
+
+- Local storage key: `rbac-admin-console-store`
+- Schema version included with migration stub in `src/storage.js`
+- Demo seed data is only created on first run and is not overwritten unless reset via settings
+
+Author
+Hesam Khorshidi
+Portfolio: https://hesamkhorshidi.github.io

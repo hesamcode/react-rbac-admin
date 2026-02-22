@@ -1,35 +1,95 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useCallback, useEffect } from 'react'
+import { HashRouter, useLocation, useNavigate } from 'react-router-dom'
+import RootLayout from './components/RootLayout'
+import ToastViewport from './components/ToastViewport'
+import AboutPage from './pages/AboutPage'
+import AccessDeniedPage from './pages/AccessDeniedPage'
+import AuditPage from './pages/AuditPage'
+import BillingPage from './pages/BillingPage'
+import LoginPage from './pages/LoginPage'
+import NotFoundPage from './pages/NotFoundPage'
+import OverviewPage from './pages/OverviewPage'
+import SettingsPage from './pages/SettingsPage'
+import UsersPage from './pages/UsersPage'
+import { AppStateProvider, useAppActions, useAppState } from './state/AppStateContext'
 
-function App() {
-  const [count, setCount] = useState(0)
+function Redirect({ to, replace = true }) {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    navigate(to, { replace })
+  }, [navigate, replace, to])
+
+  return null
+}
+
+function AppRouter() {
+  const { can, isAuthenticated, preferences, session, toasts } = useAppState()
+  const { dismissToast, logout, updatePreference } = useAppActions()
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const handleThemeToggle = useCallback(() => {
+    updatePreference('theme', preferences.theme === 'dark' ? 'light' : 'dark')
+  }, [preferences.theme, updatePreference])
+
+  const handleLogout = useCallback(() => {
+    logout()
+    navigate('/login', { replace: true })
+  }, [logout, navigate])
+
+  const path = location.pathname || '/'
+
+  let content = null
+
+  if (path === '/') {
+    content = <Redirect to={isAuthenticated ? '/overview' : '/login'} />
+  } else if (path === '/login') {
+    content = isAuthenticated ? <Redirect to="/overview" /> : <LoginPage />
+  } else if (path === '/about') {
+    content = <AboutPage />
+  } else if (path === '/overview') {
+    content = isAuthenticated ? <OverviewPage /> : <Redirect to="/login" />
+  } else if (path === '/users') {
+    content = isAuthenticated ? <UsersPage /> : <Redirect to="/login" />
+  } else if (path === '/billing') {
+    if (!isAuthenticated) {
+      content = <Redirect to="/login" />
+    } else if (!can('manageBilling')) {
+      content = <AccessDeniedPage attemptedPath={path} />
+    } else {
+      content = <BillingPage />
+    }
+  } else if (path === '/audit') {
+    content = isAuthenticated ? <AuditPage /> : <Redirect to="/login" />
+  } else if (path === '/settings') {
+    content = isAuthenticated ? <SettingsPage /> : <Redirect to="/login" />
+  } else {
+    content = <NotFoundPage />
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <RootLayout
+      canManageBilling={can('manageBilling')}
+      density={preferences.density}
+      isAuthenticated={isAuthenticated}
+      onLogout={handleLogout}
+      onToggleTheme={handleThemeToggle}
+      session={session}
+      theme={preferences.theme}
+    >
+      {content}
+      <ToastViewport onDismiss={dismissToast} toasts={toasts} />
+    </RootLayout>
   )
 }
 
-export default App
+export default function App() {
+  return (
+    <HashRouter>
+      <AppStateProvider>
+        <AppRouter />
+      </AppStateProvider>
+    </HashRouter>
+  )
+}
