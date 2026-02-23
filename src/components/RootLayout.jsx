@@ -109,13 +109,13 @@ export default function RootLayout({
         <footer className="mt-10 border-t border-slate-200 pt-4 text-center text-base text-slate-700 opacity-80 dark:border-slate-700 dark:text-slate-200">
           Built by{' '}
           <a
-            aria-label="Visit Hesam Khorshidi portfolio website"
+            aria-label="Visit HesamCode portfolio website"
             className="underline transition hover:opacity-100 focus-visible:opacity-100"
-            href="https://hesamkhorshidi.github.io"
+            href="https://hesamcode.github.io"
             rel="noopener noreferrer"
             target="_blank"
           >
-            Hesam Khorshidi
+            HesamCode
           </a>
         </footer>
       </div>

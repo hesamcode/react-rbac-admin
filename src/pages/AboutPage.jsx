@@ -5,19 +5,19 @@ export default function AboutPage() {
         About This Project
       </h1>
       <p className="text-base leading-relaxed text-slate-700 dark:text-slate-200">
-        This project was designed and developed by Hesam Khorshidi as part of a professional portfolio demonstrating advanced front-end engineering, product architecture, and UI/UX expertise.
+        This project was designed and developed by HesamCode as part of a professional portfolio demonstrating advanced front-end engineering, product architecture, and UI/UX expertise.
       </p>
       <div className="text-base text-slate-700 dark:text-slate-200">
         <p>
           Built by{' '}
           <a
-            aria-label="Visit Hesam Khorshidi portfolio website"
+            aria-label="Visit HesamCode portfolio website"
             className="underline transition hover:opacity-100 focus-visible:opacity-100"
-            href="https://hesamkhorshidi.github.io"
+            href="https://hesamcode.github.io"
             rel="noopener noreferrer"
             target="_blank"
           >
-            Hesam Khorshidi
+            HesamCode
           </a>
         </p>
       </div>

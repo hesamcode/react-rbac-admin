@@ -66,5 +66,5 @@ Output is generated in `dist/` and is fully static.
 - Demo seed data is only created on first run and is not overwritten unless reset via settings
 
 Author
-Hesam Khorshidi
-Portfolio: https://hesamkhorshidi.github.io
+HesamCode
+Portfolio: https://hesamcode.github.io
